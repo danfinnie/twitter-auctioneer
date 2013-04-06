@@ -19,17 +19,16 @@ Database Stuff
 
 This is what a pending auction looks like in the DB:
 ```
-mysql> insert into auctions (item, start_date, seller_user_id) values ("bike", NOW(), "1330669213");
+mysql> insert into auctions (item, start_date, end_date, seller_user_id) values ("bike", NOW(), NOW() + 60*60*2, "1330669213");
 Query OK, 1 row affected (0.07 sec)
 
-mysql> SELECT * FROM auctions
-    -> ;
-    +------------+-------+------+---------------------+----------+----------------+----------------+
-    | auction_id | price | item | start_date          | end_date | winner_user_id | seller_user_id |
-    +------------+-------+------+---------------------+----------+----------------+----------------+
-    |          1 |  NULL | bike | 2013-04-06 16:03:21 | NULL     | NULL           | 1330669213     |
-    +------------+-------+------+---------------------+----------+----------------+----------------+
-    1 row in set (0.05 sec)
+mysql> select * from auctions;
++------------+-------+------+---------------------+---------------------+----------------+----------------+
+| auction_id | price | item | start_date          | end_date            | winner_user_id | seller_user_id |
++------------+-------+------+---------------------+---------------------+----------------+----------------+
+|          1 |  NULL | bike | 2013-04-06 07:40:12 | 2013-04-06 16:47:41 | NULL           | 1330669213     |
++------------+-------+------+---------------------+---------------------+----------------+----------------+
+1 row in set (0.02 sec)
 ```
 
 Possible Tweets
