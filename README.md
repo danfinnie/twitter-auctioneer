@@ -3,8 +3,8 @@ twitter-auctioneer
 
 lvtech 2013 hackathon project to host auctions with your friends via twitter
 
-Setup
------
+Server Setup
+------------
 
 1. Install node
 2. Install stuff with npm `npm install user-stream mysql@2.0.0-alpha7`
