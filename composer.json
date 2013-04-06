@@ -1,0 +1,15 @@
+{
+    "name" : "beckoncall/common",
+    "license":"proprietary",
+    "description" : "Common library for BeckonCall applications",
+    "require" : {
+        "doctrine/orm": "2.3.3",
+        "zendframework/zendframework1": "1.11.*",
+        "cvele/klein.php": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {
+            "TweetBid\\": "src/"
+        }
+    }
+}
