@@ -27,6 +27,7 @@ stream.on('data', function(data) {
     console.log(data);
 
     var twitter_user_id = data.user.id_str;
+    var twitter_user_name = data.user.screen_name;
     var price = /\$([\d\.]+)/.exec(data.text)[1];
     var hashtags = data.entities.hashtags.map(function(tag) { return tag.text });
     var bid_idx = hashtags.indexOf("bid");
@@ -41,7 +42,7 @@ stream.on('data', function(data) {
 
     console.log({user: twitter_user_id, price: price, item: item});
 
-    connection.query('INSERT INTO bids (twitter_user_id, price, item, date) VALUES (?, ?, ?, NOW())', [twitter_user_id, price, item], function(err, results) {
+    connection.query('INSERT INTO bids (twitter_user_id, twitter_user_name, price, item, date) VALUES (?, ?, ?, ?, NOW())', [twitter_user_id, twitter_user_name, price, item], function(err, results) {
         console.log(results);
     });
 });
