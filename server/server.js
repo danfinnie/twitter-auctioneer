@@ -26,7 +26,16 @@ stream.on('data', function(data) {
 
     var twitter_user_id = data.user.id_str;
     var price = /\$([\d\.]+)/.exec(data.text)[1];
-    var item = data.entities.hashtags[0].text;
+    var hashtags = data.entities.hashtags.map(function(tag) { return tag.text });
+    var bid_idx = hashtags.indexOf("bid");
+    var item;
+
+    if (bid_idx == -1)
+        return; // Need to specify #bid to bid.
+    else if (bid_idx == 0)
+        item = hashtags[1];
+    else
+        item = hashtags[0];
 
     console.log({user: twitter_user_id, price: price, item: item});
 
