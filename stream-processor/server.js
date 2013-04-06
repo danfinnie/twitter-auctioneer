@@ -24,6 +24,8 @@ stream.on('data', function(data) {
     if (!data.user || !data.text)
         return
 
+    console.log(data);
+
     var twitter_user_id = data.user.id_str;
     var price = /\$([\d\.]+)/.exec(data.text)[1];
     var hashtags = data.entities.hashtags.map(function(tag) { return tag.text });
