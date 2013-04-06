@@ -57,3 +57,37 @@ foreach($dbh->query("
         echo "Not enough people to remind about #$row[item], no. $row[auction_id]\n";
     }
 }
+
+$winning_bidder_stmt = $dbh->prepare("select twitter_user_id, twitter_user_name, price from bids where auction_id=? order by price desc, date asc limit 1;");
+$update_auction = $dbh->prepare("UPDATE auctions SET price = ?, winner_user_id=? WHERE auction_id=?");
+
+// TODO: This query below is almost exactly like the one above but reminders_sent = 1 not 0.  Maybe Tim
+// has some magic way of reusing the rest of the code, maybe using chaining???
+foreach($dbh->query("
+    SELECT *
+    FROM auctions
+    JOIN (SELECT max(bids.date) as last_action, auctions.auction_id
+        FROM auctions
+        JOIN bids
+        ON bids.auction_id = auctions.auction_id
+        GROUP BY auctions.auction_id) maxers
+    ON maxers.auction_id = auctions.auction_id
+    WHERE last_action < NOW() - $last_action_timeout
+    AND winner_user_id IS NULL
+    AND reminders_sent = 1
+;") as $row) {
+    $winning_bidder_stmt->bindValue(1, $row['auction_id']);
+    $winning_bidder_stmt->execute();
+    $winning_bidder = $winning_bidder_stmt->fetch();
+
+    $tweet = "@$winning_bidder[twitter_user_name] won @$row[seller_user_id]'s #$row[item] for $winning_bidder[price] bucks!";
+
+    echo $tweet . "\n";
+    
+    $twitter
+        ->post("statuses/update.json")
+        ->addPostFields(array("status" => $tweet))
+        ->send();
+
+    $mark_sent_stmt->execute(array($winning_bidder['price'], $winning_bidder['twitter_user_id'], $row['auction_id']));
+}
