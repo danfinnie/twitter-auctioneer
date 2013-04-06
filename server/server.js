@@ -39,7 +39,7 @@ stream.on('data', function(data) {
 
     console.log({user: twitter_user_id, price: price, item: item});
 
-    connection.query('INSERT INTO bids (twitter_user_id, price, item) VALUES (?, ?, ?)', [twitter_user_id, price, item], function(err, results) {
+    connection.query('INSERT INTO bids (twitter_user_id, price, item, date) VALUES (?, ?, ?, NOW())', [twitter_user_id, price, item], function(err, results) {
         console.log(results);
     });
 });
@@ -58,6 +58,7 @@ var Y = function (F) {
 
 Y(function(rec) {
     return function() {
+        connection.query
         console.log("PONG");
         setTimeout(rec, 1000);
     };
