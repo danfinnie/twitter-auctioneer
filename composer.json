@@ -1,11 +1,12 @@
 {
-    "name" : "beckoncall/common",
+    "name" : "twitterauctioneer/common",
     "license":"proprietary",
-    "description" : "Common library for BeckonCall applications",
+    "description" : "Common library for Twitter Auctioneer applications",
     "require" : {
         "doctrine/orm": "2.3.3",
         "zendframework/zendframework1": "1.11.*",
-        "cvele/klein.php": "dev-master"
+        "cvele/klein.php": "dev-master",
+        "guzzle/guzzle": "~3.1.1"
     },
     "autoload": {
         "psr-0": {
