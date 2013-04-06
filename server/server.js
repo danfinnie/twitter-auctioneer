@@ -30,7 +30,7 @@ stream.on('data', function(data) {
     var bid_idx = hashtags.indexOf("bid");
     var item;
 
-    if (bid_idx == -1)
+    if (bid_idx == -1 || hashtags.length < 2)
         return; // Need to specify #bid to bid.
     else if (bid_idx == 0)
         item = hashtags[1];
@@ -58,8 +58,7 @@ var Y = function (F) {
 
 Y(function(rec) {
     return function() {
-        connection.query
         console.log("PONG");
-        setTimeout(rec, 1000);
+        setTimeout(rec, 60*100);
     };
 })();
