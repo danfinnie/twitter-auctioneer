@@ -15,10 +15,10 @@ var connection = mysql.createConnection({
     database: process.env.AUCTIONEER_MYSQL_DB
 });
 
-//create stream
+/**
+ * This thing shoves tweets to our bot into the database.
+ */
 stream.stream();
-
-//listen stream data
 stream.on('data', function(data) {
     // Only handle tweets
     if (!data.user || !data.text)
@@ -43,3 +43,13 @@ stream.on('data', function(data) {
         console.log(results);
     });
 });
+
+/**
+ * This thing periodically looks for finished auctions.
+ */
+var fun = function() {
+    console.log("PONG");
+    setTimeout(fun, 1000);
+};
+fun();
+
