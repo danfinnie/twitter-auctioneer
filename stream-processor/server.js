@@ -29,7 +29,12 @@ stream.on('data', function(data) {
 
     var twitter_user_id = data.user.id_str;
     var twitter_user_name = data.user.screen_name;
-    var price = /\$([\d\.]+)/.exec(data.text)[1];
+
+    var price_matches = /\$([\d\.]+)/.exec(data.text)
+    if (!price_matches || price_matches.length < 2)
+        return // Needs to have a price
+    var price = price_matches[1];
+
     var hashtags = data.entities.hashtags.map(function(tag) { return tag.text });
     var timestamp = Date.parse(data.created_at);
     var bid_idx = hashtags.indexOf("bid");
