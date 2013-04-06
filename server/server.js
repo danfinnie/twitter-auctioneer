@@ -47,9 +47,18 @@ stream.on('data', function(data) {
 /**
  * This thing periodically looks for finished auctions.
  */
-var fun = function() {
-    console.log("PONG");
-    setTimeout(fun, 1000);
-};
-fun();
+var Y = function (F) {
+ return (function (x) {
+  return F(function (y) { return (x(x))(y);});
+  })
+        (function (x) {
+  return F(function (y) { return (x(x))(y);});
+  }) ;
+} ;
 
+Y(function(rec) {
+    return function() {
+        console.log("PONG");
+        setTimeout(rec, 1000);
+    };
+})();
