@@ -1,5 +1,6 @@
 var Stream = require('user-stream');
 var mysql = require('mysql');
+var http = require("http");
 
 var stream = new Stream({
     consumer_key: process.env.AUCTIONEER_TWITTER_CONSUMER_KEY,
@@ -24,7 +25,7 @@ function handle_sell(data, sell_idx) {
     var item = data.entities.hashtags[item_idx].text;
     var timestamp = Date.parse(data.created_at);
 
-    connection.query('INSERT INTO auctions (item, start_date, seller_user_id) VALUES (?, FROM_UNIXTIME(?), ?)', [item, timestamp/1000, twitter_user_id], function(err, results) {
+    connection.query('INSERT INTO auctions (item, start, seller_user_id) VALUES (?, FROM_UNIXTIME(?), ?)', [item, timestamp/1000, twitter_user_id], function(err, results) {
         console.log(err);
         console.log(results);
     });
@@ -80,14 +81,18 @@ stream.on('data', function(data) {
 
         var auction_id = results[0].auction_id;
 
-        connection.query('INSERT INTO bids (twitter_user_id, twitter_user_name, price, auction_id, date) VALUES (?, ?, ?, ?, FROM_UNIXTIME(?))', [twitter_user_id, twitter_user_name, price, auction_id, timestamp/1000], function(err, results) {
-            console.log(err);
-            console.log(results);
-        });
+        connection.query('SELECT * FROM users WHERE id=? AND account IS NOT NULL', [twitter_user_id], function(err, results) {
+            if(results.length == 1) {
+                connection.query('INSERT INTO bids (user_id, twitter_user_name, price, auction_id, date) VALUES (?, ?, ?, ?, FROM_UNIXTIME(?))', [twitter_user_id, twitter_user_name, price*100, auction_id, timestamp/1000], function(err, results) {
+                    console.log(err);
+                    console.log(results);
+                });
 
-        connection.query('UPDATE auctions SET price = ?, notification_state = ? WHERE auction_id = ?', [price, 1, auction_id], function(err, results) {
-            console.log(err);
-            console.log(results);
+                connection.query('UPDATE auctions SET price = ?, notification_state = ? WHERE auction_id = ?', [price, 1, auction_id], function(err, results) {
+                    console.log(err);
+                    console.log(results);
+                });
+            }
         });
     });
 });
@@ -106,6 +111,14 @@ var Y = function (F) {
 
 Y(function(rec) {
     return function() {
+        http.request({
+            host: process.env.AUCTIONEER_CRON_HOST,
+            path: process.env.AUCTIONEER_CRON_PATH
+        }, function(response) {
+            response.on("data", function(data) {
+                console.log(data);
+            }); 
+        });
         console.log("PONG");
         setTimeout(rec, 60*100);
     };
