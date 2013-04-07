@@ -97,4 +97,28 @@ class Auction
     public function isFinalizedAuction() {
         return $this->state === 4;
     }
+
+    public function advanceState() {
+        $this->state++;
+    }
+
+    public function getLastBid() {
+        $lastBid = null;
+        foreach ($this->getBids() as $bid) {
+            if (!$lastBid || $bid->getTimestamp() > $lastBid->getTimestamp())
+                $lastBid = $bid;
+        }
+        return $lastBid;
+    }
+
+    public function getBidders() {
+        $bidders = array();
+
+        foreach ($this->getBids() as $bid) {
+            $bidder = $bid->getUser();
+
+            if (!in_array($bidder, $bidders))
+                $bidders[] = $bidder;
+        }
+    }
 }

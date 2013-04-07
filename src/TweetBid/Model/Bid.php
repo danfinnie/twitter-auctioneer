@@ -17,13 +17,13 @@ class Bid
     
     /**
      * @Column(type="integer")
-     * @var int
+     * @var \DateTime
      */
     protected $amount;
 
     /**
      * @Column(type="datetime")
-     * @var int
+     * @var \DateTime
      */
     protected $timestamp;
 
