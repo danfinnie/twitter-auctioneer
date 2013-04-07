@@ -57,10 +57,10 @@ class Auction
     protected $bids = array();
 
     /**
-     * @Column(type="boolean")
-     * @var bool
+     * @Column(type="integer")
+     * @var int
      */
-    protected $active = false;
+    protected $state = false;
     
     public function __construct($item)
     {
@@ -77,12 +77,24 @@ class Auction
     {
         return $this->bids->toArray();
     }
-    
-    public function isActive($state = null)
-    {
-        if(!is_null($state)){
-            $this->active = (bool) $state;
-        }
-        return (bool) $this->active;
+
+    public function isNewAuction() {
+        return $this->state === 0;
+    }
+
+    public function isAnnouncedAuction() {
+        return $this->state === 1;
+    }
+
+    public function isContestedAuction() {
+        return $this->state === 2;
+    }
+
+    public function isWonAuction() {
+        return $this->state === 3;
+    }
+
+    public function isFinalizedAuction() {
+        return $this->state === 4;
     }
 }

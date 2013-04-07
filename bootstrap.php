@@ -34,6 +34,9 @@ $container['em'] = $container->share(function($c){
     return $em;
 });
 
+$container["tweeter"] = new TweetBid\Service\Tweeter($container);
+
+// Is this used?
 $container['session'] = $container->share(function ($c){
     $session = new Zend_Session_Namespace('tweetbid');
     return $session;
