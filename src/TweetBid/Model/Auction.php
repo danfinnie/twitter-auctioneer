@@ -126,5 +126,6 @@ class Auction
     public function close()
     {
         $this->end = new \DateTime();
+        $this->state = 4;
     }
 }
