@@ -11,9 +11,45 @@ Server Setup
 3. Make a MySQL database and make a table in it:
     ```create table bids (bid_id int auto_increment primary key, price decimal(5,2), twitter_user_id varchar(255), item varchar(255), date datetime );
     create table auctions (auction_id int auto_increment primary key, price decimal(5,2), item varchar(255), start_date datetime, end_date datetime, winner_user_id varchar(255), seller_user_id varchar(255) );```
-3. Copy prep_env.sh.dist to prep_env.sh and fill it out.  `source prep_env.sh`
-3. Make sure the CURL PHP extension is installed.  Run `composer update` in the `gavel-guy` dir.
-4. `nodejs server.js`
+    This is what your database should be now:
+    ```
+    mysql> desc bids;
+    +-------------------+--------------+------+-----+---------+----------------+
+    | Field             | Type         | Null | Key | Default | Extra          |
+    +-------------------+--------------+------+-----+---------+----------------+
+    | bid_id            | int(11)      | NO   | PRI | NULL    | auto_increment |
+    | price             | decimal(5,2) | YES  |     | NULL    |                |
+    | twitter_user_id   | varchar(255) | YES  |     | NULL    |                |
+    | date              | datetime     | YES  |     | NULL    |                |
+    | auction_id        | int(11)      | YES  |     | NULL    |                |
+    | twitter_user_name | varchar(255) | YES  |     | NULL    |                |
+    +-------------------+--------------+------+-----+---------+----------------+
+
+    mysql> desc auctions;
+    +--------------------+--------------+------+-----+---------+----------------+
+    | Field              | Type         | Null | Key | Default | Extra          |
+    +--------------------+--------------+------+-----+---------+----------------+
+    | auction_id         | int(11)      | NO   | PRI | NULL    | auto_increment |
+    | price              | decimal(5,2) | YES  |     | NULL    |                |
+    | item               | varchar(255) | YES  |     | NULL    |                |
+    | start_date         | datetime     | YES  |     | NULL    |                |
+    | end_date           | datetime     | YES  |     | NULL    |                |
+    | winner_user_id     | varchar(255) | YES  |     | NULL    |                |
+    | seller_user_id     | varchar(255) | YES  |     | NULL    |                |
+    | notification_state | int(11)      | YES  |     | 0       |                |
+    +--------------------+--------------+------+-----+---------+----------------+
+    ```
+3. Copy .env.dist to .env and fill it out.
+3. Make sure the CURL PHP extension is installed.  Run `composer update`.
+4. Run all servers: `foreman start`
+
+Recent Changes
+--------------
+
+* prep_env.sh changed to .env (this is for foreman)
+* Use Procfile for foreman (not necessary, can also just run the commands)
+* Add notices for being outbid, new auction, and winning.
+* Create an auction by tweeting `@TweetAuctioneer #sell #something`.
 
 Database Stuff
 --------------
@@ -35,6 +71,6 @@ mysql> select * from auctions;
 Possible Tweets
 ---------------
 
-@twitter_auctioneer I'll #bid $50 for the #bike.
-@twitter_auctioneer You selling a #bike?  I'm down to #bid $60.
-@zoey You won the #bike!
+* @twitter_auctioneer I'll #bid $50 for the #bike.
+* @twitter_auctioneer You selling a #bike?  I'm down to #bid $60.
+* @zoey You won the #bike!
