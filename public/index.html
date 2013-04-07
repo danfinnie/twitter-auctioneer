@@ -100,7 +100,9 @@
                 $http.get('api/user').success(function(data) {
                   $scope.user = data.user;
                 });
-        	  });
+        	  }).error(function() {
+                alert("error");
+              });
           }
         });    	  
       };

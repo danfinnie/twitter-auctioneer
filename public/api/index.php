@@ -15,7 +15,6 @@ with('/api', function () use ($container){
     
     //twitter's callback
     respond('/twitter', function (_Request $request, _Response $response) use ($container) {
-        $session = $container['session'];
         $config = $container['config']->twitter->toArray();
         $consumer = new Zend_Oauth_Consumer($config);  
         $token = $consumer->getAccessToken(
@@ -53,14 +52,14 @@ with('/api', function () use ($container){
         if(!empty($user)){
             $response->json(array('user' => $user->jsonSerialize()));
         } else {
-            $response->code(404);
+            $response->code(401);
         }
     });
     
     respond('/payment', function (_Request $request, _Response $response) use ($container) {
         $user = $request->session('user');
         if(empty($user)){
-            $response->code(404);
+            $response->code(401);
             return;
         }
         
