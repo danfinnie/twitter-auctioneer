@@ -77,4 +77,12 @@ class Auction
     {
         return $this->bids->toArray();
     }
+    
+    public function isActive($state = null)
+    {
+        if(!is_null($state)){
+            $this->active = (bool) $state;
+        }
+        return (bool) $this->active;
+    }
 }

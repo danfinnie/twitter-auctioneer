@@ -4,7 +4,7 @@ use Doctrine\ORM\EntityManager;
 
 class Auction
 {
-    protected $fair = 30;
+    protected $fair = 'PT30S';
     
     /**
      * @var Doctrine\ORM\EntityManager
@@ -14,15 +14,7 @@ class Auction
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
-    }
-    
-    /**
-     * Try to close auction.
-     */
-    public function closeAuction(\TweetBid\Model\Auction $auction)
-    {
-        //ensure high bid was further than fair warning
-        
+        $this->fair = new \DateInterval($this->fair);
     }
     
     public function getHighBid(\TweetBid\Model\Auction $auction)
@@ -49,5 +41,33 @@ class Auction
         return $high;
     }
     
-    
+    //it's assumed this will be called at a consistant inerval, perhaps based
+    //on auction activity (but for now, something like 15 seconds)
+    public function manageAuction(\TweetBid\Model\Auction $auction)
+    {
+        //has something new and intersting happened?
+        if($auction->isActive()){
+            //announce the current high bid, mention the last few bidders
+            
+            $auction->isActive(false);
+            $this->em->flush();
+        }
+        
+        //has it started? (kind of a hack for now)
+        if(!$this->getHighBid($auction)){
+            return; //nothin to do
+        }
+        
+        //should we close this (gave fair warning, and waited)?
+        if($this->getHighBid($auction)->getTimestamp()->add($this->fair)->add($this->fair) < new \DateTime()){
+            //close that puppy and tweet out the winner
+            
+            //also, charge the sucker
+        }
+        
+        //should we warn people ?
+        if($this->getHighBid($auction)->getTimestamp()->add($this->fair) < new \DateTime()){
+            //tweet out a fair warning
+        }
+    }
 }

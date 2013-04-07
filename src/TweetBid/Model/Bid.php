@@ -62,7 +62,7 @@ class Bid
     
     public function getTimestamp()
     {
-        return $this->timestamp;
+        return clone $this->timestamp;
     }
     
     public function getAuction()
