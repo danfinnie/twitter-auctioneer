@@ -85,7 +85,7 @@ stream.on('data', function(data) {
             console.log(results);
         });
 
-        connection.query('UPDATE auctions SET price = ?, reminders_sent = ? WHERE auction_id = ?', [price, false, auction_id], function(err, results) {
+        connection.query('UPDATE auctions SET price = ?, notification_state = ? WHERE auction_id = ?', [price, 1, auction_id], function(err, results) {
             console.log(err);
             console.log(results);
         });

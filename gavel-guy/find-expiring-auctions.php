@@ -6,6 +6,15 @@ use Guzzle\Http\Client;
 use Guzzle\Plugin\Oauth\OauthPlugin;
 
 set_time_limit(0);
+$last_action_timeout = 60;
+
+/**
+ * Notification states
+ * 0 - Nothing sent
+ * 1 - Auction announced
+ * 2 - You have been outbid notifications
+ * 3 - Someone won
+ */
 
 while(true) {
     sleep(1);
@@ -13,7 +22,6 @@ while(true) {
 
 
     $dbh = new PDO("mysql:host=" . getenv('AUCTIONEER_MYSQL_HOST') . ";dbname=" . getenv('AUCTIONEER_MYSQL_DB'), getenv('AUCTIONEER_MYSQL_USER'), getenv('AUCTIONEER_MYSQL_PASSWORD'));
-    $last_action_timeout = 1; // 5*60*60
 
     $twitter = new Client('https://api.twitter.com/{version}', array(
         'version' => '1.1',
@@ -25,9 +33,9 @@ while(true) {
         'token'           => getenv('AUCTIONEER_TWITTER_ACCESS_TOKEN'),
         'token_secret'    => getenv('AUCTIONEER_TWITTER_ACCESS_TOKEN_SECRET'),
     )));
-     
+
     $last_bidders_stmt = $dbh->prepare("SELECT twitter_user_name FROM bids WHERE auction_id=? ORDER BY price DESC");
-    $mark_sent_stmt = $dbh->prepare("UPDATE auctions SET reminders_sent=1 WHERE auction_id=?");
+    $mark_sent_stmt = $dbh->prepare("UPDATE auctions SET notification_state=2 WHERE auction_id=?");
 
     foreach($dbh->query("
         SELECT *
@@ -38,9 +46,9 @@ while(true) {
             ON bids.auction_id = auctions.auction_id
             GROUP BY auctions.auction_id) maxers
         ON maxers.auction_id = auctions.auction_id
-        WHERE last_action < NOW() - $last_action_timeout
+        WHERE last_action < NOW() - 2 * $last_action_timeout
         AND winner_user_id IS NULL
-        AND reminders_sent = 0
+        AND notification_state = 1
     ;") as $row) {
         $last_bidders_stmt->bindValue(1, $row['auction_id']);
         $last_bidders_stmt->execute();
@@ -65,6 +73,25 @@ while(true) {
         }
     }
 
+    $update_auction = $dbh->prepare("UPDATE auctions SET notification_state=1 WHERE auction_id=?");
+
+    foreach($dbh->query("
+        SELECT *
+        FROM auctions
+        WHERE notification_state = 0
+    ;") as $row) {
+        $tweet = "We have a #$row[item] up for grabs!";
+
+        echo $tweet . "\n";
+        
+        $update_auction->execute(array($row['auction_id']));
+
+        $twitter
+            ->post("statuses/update.json")
+            ->addPostFields(array("status" => $tweet))
+            ->send();
+    }
+
     $winning_bidder_stmt = $dbh->prepare("select twitter_user_id, twitter_user_name, price from bids where auction_id=? order by price desc, date asc limit 1;");
     $update_auction = $dbh->prepare("UPDATE auctions SET price = ?, winner_user_id=? WHERE auction_id=?");
 
@@ -81,7 +108,7 @@ while(true) {
         ON maxers.auction_id = auctions.auction_id
         WHERE last_action < NOW() - $last_action_timeout
         AND winner_user_id IS NULL
-        AND reminders_sent = 1
+        AND notification_state = 2
     ;") as $row) {
         $winning_bidder_stmt->bindValue(1, $row['auction_id']);
         $winning_bidder_stmt->execute();
@@ -97,6 +124,5 @@ while(true) {
             ->post("statuses/update.json")
             ->addPostFields(array("status" => $tweet))
             ->send();
-
     }
 }
