@@ -16,6 +16,20 @@ var connection = mysql.createConnection({
     debug: true
 });
 
+function handle_sell(data, sell_idx) {
+    console.log("received a sell");
+    var twitter_user_id = data.user.id_str;
+    var twitter_user_name = data.user.screen_name;
+    var item_idx = sell_idx == 0 ? 1 : 0;
+    var item = data.entities.hashtags[item_idx].text;
+    var timestamp = Date.parse(data.created_at);
+
+    connection.query('INSERT INTO auctions (item, start_date, seller_user_id) VALUES (?, FROM_UNIXTIME(?), ?)', [item, timestamp/1000, twitter_user_id], function(err, results) {
+        console.log(err);
+        console.log(results);
+    });
+}
+
 /**
  * This thing shoves tweets to our bot into the database.
  */
@@ -33,22 +47,27 @@ stream.on('data', function(data) {
     var twitter_user_id = data.user.id_str;
     var twitter_user_name = data.user.screen_name;
 
-    var price_matches = /\$([\d\.]+)/.exec(data.text)
-    if (!price_matches || price_matches.length < 2)
-        return; // Needs to have a price
-    var price = price_matches[1];
-
     var hashtags = data.entities.hashtags.map(function(tag) { return tag.text });
     var timestamp = Date.parse(data.created_at);
     var bid_idx = hashtags.indexOf("bid");
+    var sell_idx = hashtags.indexOf("sell");
     var item;
 
-    if (bid_idx == -1 || hashtags.length < 2)
+    if (sell_idx > -1) {
+        handle_sell(data, sell_idx);
+        return;
+    } else if (bid_idx == -1 || hashtags.length < 2)
         return; // Need to specify #bid to bid.
     else if (bid_idx == 0)
         item = hashtags[1];
     else
         item = hashtags[0];
+
+    var price_matches = /\$([\d\.]+)/.exec(data.text)
+    if (!price_matches || price_matches.length < 2)
+        return; // Needs to have a price
+    var price = price_matches[1];
+
 
     connection.query('SELECT * FROM auctions WHERE item = ? ORDER BY start_date DESC LIMIT 1', [item], function(err, results) {
         console.log(results);
