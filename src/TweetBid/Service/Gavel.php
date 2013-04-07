@@ -43,10 +43,16 @@ class Gavel
         $lastBid = $auction->getLastBid();
         if ($this->bidIsPastTimeout($lastBid)) {
             $bidders = $auction->getBidders();
-            $this->tweeter->tweet
+            //$last_bidder_idx = array_search($lastBid->getUser(), $bidders);
+            //unset($bidders[$last_bidder_idx]);
+            $tweet_str = "";
+            foreach($bidders as $bidder)
+                $tweet_str .= '@' . $bidder->getName() . ' ';
+            $tweet_str .= " Going once on the " . $auction->getItem();
+            $this->tweeter->tweet($tweet_str);
+            $auction->advanceState();
         }
     }
-
 
     private function handleContestedAuction($auction) {
 
@@ -57,6 +63,6 @@ class Gavel
     }
 
     private function bidIsPastTimeout($bid) {
-       return $bid->getTimestamp->diff(new \DateTime()) > $this->auctionTimeout();
+       return $bid->getTimestamp()->add($this->auctionTimeout()) < new \DateTime();
     }
 }
