@@ -121,4 +121,10 @@ class Auction
                 $bidders[] = $bidder;
         }
     }
+    
+    //TODO: could do the fair warn validation here
+    public function close()
+    {
+        $this->end = new \DateTime();
+    }
 }
