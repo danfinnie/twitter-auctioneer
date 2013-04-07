@@ -61,8 +61,14 @@ class Auction
         //should we close this (gave fair warning, and waited)?
         if($this->getHighBid($auction)->getTimestamp()->add($this->fair)->add($this->fair) < new \DateTime()){
             //close that puppy and tweet out the winner
-            
+            $auction->close();
+
             //also, charge the sucker
+            $bid = $this->getHighBid($auction);
+            $account = \Balanced\Account::get($bid->getUser()->getAccount());
+            $account->debit($bid->getAmount());
+            
+            $this->em->flush();
         }
         
         //should we warn people ?
