@@ -25,7 +25,7 @@ function handle_sell(data, sell_idx) {
     var item = data.entities.hashtags[item_idx].text;
     var timestamp = Date.parse(data.created_at);
 
-    connection.query('INSERT INTO auctions (item, start, seller_user_id) VALUES (?, FROM_UNIXTIME(?), ?)', [item, timestamp/1000, twitter_user_id], function(err, results) {
+    connection.query('INSERT INTO auctions (item, start, seller_id) VALUES (?, FROM_UNIXTIME(?), ?)', [item, timestamp/1000, twitter_user_id], function(err, results) {
         console.log(err);
         console.log(results);
     });
@@ -70,25 +70,29 @@ stream.on('data', function(data) {
     var price = price_matches[1];
 
 
-    connection.query('SELECT * FROM auctions WHERE item = ? ORDER BY start_date DESC LIMIT 1', [item], function(err, results) {
+    connection.query('SELECT * FROM auctions WHERE item = ? AND state < 4 ORDER BY start DESC LIMIT 1', [item], function(err, results) {
         console.log(results);
 
-        if (results.length == 0)
+        if (results.length == 0) {
+            console.log("** No such auction");
             return; // No such auction is running.
+        }
 
-        if (results[0].price >= price)
+        if (results[0].amount >= price*100) {
+            console.log("** Bad price");
             return; // Price must be monotonically increasing.
+        }
 
-        var auction_id = results[0].auction_id;
+        var auction_id = results[0].id;
 
         connection.query('SELECT * FROM users WHERE id=? AND account IS NOT NULL', [twitter_user_id], function(err, results) {
             if(results.length == 1) {
-                connection.query('INSERT INTO bids (user_id, twitter_user_name, price, auction_id, date) VALUES (?, ?, ?, ?, FROM_UNIXTIME(?))', [twitter_user_id, twitter_user_name, price*100, auction_id, timestamp/1000], function(err, results) {
+                connection.query('INSERT INTO bids (user_id, amount, auction_id, timestamp) VALUES (?, ?, ?, FROM_UNIXTIME(?))', [twitter_user_id, price*100, auction_id, timestamp/1000], function(err, results) {
                     console.log(err);
                     console.log(results);
                 });
 
-                connection.query('UPDATE auctions SET price = ?, notification_state = ? WHERE auction_id = ?', [price, 1, auction_id], function(err, results) {
+                connection.query('UPDATE auctions SET amount = ?, state = ? WHERE id = ?', [price*100, 1, auction_id], function(err, results) {
                     console.log(err);
                     console.log(results);
                 });
@@ -111,14 +115,6 @@ var Y = function (F) {
 
 Y(function(rec) {
     return function() {
-        http.request({
-            host: process.env.AUCTIONEER_CRON_HOST,
-            path: process.env.AUCTIONEER_CRON_PATH
-        }, function(response) {
-            response.on("data", function(data) {
-                console.log(data);
-            }); 
-        });
         console.log("PONG");
         setTimeout(rec, 60*100);
     };

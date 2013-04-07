@@ -27,7 +27,7 @@ class Gavel
             elseif ($auction->isWonAuction())
                 $this->handleWonAuction($auction);
 
-            $em->flush(); // In case we timeout during script execution.
+            $this->em->flush(); // In case we timeout during script execution.
         }
     }
 
@@ -36,7 +36,7 @@ class Gavel
         $seller = $auction->getSeller()->getName();
 
         $auction->advanceState();
-        $this->tweeter->tweet("We have a #$item from @$seller for sale!");
+        $this->tweeter->tweet("We have a #$item from @" . "$seller for sale!");
     }
 
     private function handleAnnouncedAuction($auction) {
@@ -46,8 +46,8 @@ class Gavel
             return;
         }
         
-        $this->tweeter->tweet("Now " . $lastBid->getUser()->getName() . " is the high bidder for #" . $auction->getItem() . " at $" . $lastBid->getAmount()/100);
         $auction->advanceState();
+        $this->tweeter->tweet("Now @" . $lastBid->getUser()->getName() . " is the high bidder for #" . $auction->getItem() . " at $" . $lastBid->getAmount()/100);
     }
 
     private function handleContestedAuction($auction) {
@@ -83,7 +83,6 @@ class Gavel
                 $tweet_str .= ' @' . $bidder->getName();
             }
             $this->tweeter->tweet($tweet_str);
-            $auction->advanceState();
         }        
     }
 

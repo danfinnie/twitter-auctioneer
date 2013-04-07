@@ -128,4 +128,12 @@ class Auction
         $this->end = new \DateTime();
         $this->state = 4;
     }
+
+    public function getItem() {
+        return $this->item;
+    }
+
+    public function getSeller() {
+        return $this->seller;
+    }
 }
