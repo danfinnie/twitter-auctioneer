@@ -1,41 +1,85 @@
 {
-    "hash": "e50f67472d2e8d8d92db1a000ebb2323",
+    "hash": "a697b4ee242ffea8df973c458e8eed77",
     "packages": [
         {
-            "name": "cvele/klein.php",
-            "version": "dev-master",
+            "name": "balanced/balanced",
+            "version": "0.7.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/cvele/klein.php.git",
-                "reference": "cb69fd76b2467d403abfd0a063ce9bb5290a86c8"
+                "url": "https://github.com/balanced/balanced-php.git",
+                "reference": "v0.7.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cvele/klein.php/zipball/cb69fd76b2467d403abfd0a063ce9bb5290a86c8",
-                "reference": "cb69fd76b2467d403abfd0a063ce9bb5290a86c8",
+                "url": "https://api.github.com/repos/balanced/balanced-php/zipball/v0.7.1",
+                "reference": "v0.7.1",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.2"
+                "bninja/restful": "*",
+                "nategood/httpful": "*"
             },
             "type": "library",
             "autoload": {
-                "files": [
-                    "klein.php"
-                ]
+                "psr-0": {
+                    "Balanced": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "LGPL-2.1",
-                " BSD-2-Clause"
+                "MIT"
             ],
             "authors": [
                 {
-                    "name": "Chris O'Hara",
-                    "homepage": "https://github.com/chriso/klein.php"
+                    "name": "Balanced",
+                    "email": "dev@balancedpayments.com",
+                    "homepage": "http://www.balancedpayments.com"
                 }
             ],
-            "time": "2013-01-09 15:11:37"
+            "description": "Client for Balanced API",
+            "homepage": "http://github.com/balanced/balanced-php",
+            "keywords": [
+                "api",
+                "payments"
+            ],
+            "time": "2013-03-26 19:06:46"
+        },
+        {
+            "name": "bninja/restful",
+            "version": "0.1.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bninja/restful.git",
+                "reference": "v0.1.7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bninja/restful/zipball/v0.1.7",
+                "reference": "v0.1.7",
+                "shasum": ""
+            },
+            "require": {
+                "nategood/httpful": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "RESTful": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Library for writing RESTful PHP clients.",
+            "homepage": "http://github.com/bninja/restful",
+            "keywords": [
+                "api",
+                "client",
+                "http",
+                "rest"
+            ],
+            "time": "2013-03-22 18:13:08"
         },
         {
             "name": "doctrine/common",
@@ -332,6 +376,101 @@
             "time": "2013-01-28 00:07:40"
         },
         {
+            "name": "klein/klein",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/chriso/klein.php.git",
+                "reference": "v1.1.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/chriso/klein.php/zipball/v1.1.0",
+                "reference": "v1.1.0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.7.x"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "klein.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Chris O'Hara",
+                    "email": "cohara87@gmail.com",
+                    "homepage": "http://chris6f.com/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A lightning fast router for PHP",
+            "homepage": "https://github.com/chriso/klein.php",
+            "keywords": [
+                "boilerplate",
+                "router",
+                "routing",
+                "sinatra"
+            ],
+            "time": "2013-03-19 18:54:45"
+        },
+        {
+            "name": "nategood/httpful",
+            "version": "0.2.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nategood/httpful.git",
+                "reference": "v0.2.3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nategood/httpful/zipball/v0.2.3",
+                "reference": "v0.2.3",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Httpful": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nate Good",
+                    "email": "me@nategood.com",
+                    "homepage": "http://nategood.com"
+                }
+            ],
+            "description": "A Readable, Chainable, REST friendly, PHP HTTP Client",
+            "homepage": "http://github.com/nategood/httpful",
+            "keywords": [
+                "api",
+                "curl",
+                "http",
+                "requests",
+                "rest",
+                "restful"
+            ],
+            "time": "2013-03-05 04:08:29"
+        },
+        {
             "name": "pimple/pimple",
             "version": "v1.0.2",
             "source": {
@@ -531,9 +670,9 @@
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "cvele/klein.php": 20
-    },
+    "stability-flags": [
+
+    ],
     "platform": [
 
     ],

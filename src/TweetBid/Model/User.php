@@ -19,12 +19,12 @@ class User
      * @var string
      */
     protected $name;
-
+    
     /**
-     * @Column(type="string")
+     * @Column(type="string", nullable=true)
      * @var string
      */
-    protected $token;
+    protected $account;
 
     public function __construct($id, $name)
     {
@@ -32,24 +32,46 @@ class User
         $this->name = $name;
     }
     
-    //TODO: implment this
-    public function refresh(\TweetBid\Service\Twitter $twitter)
+    public function getId()
     {
-        //fetch user data from twitter and update meta data
+        return $this->id;
     }
     
-    public function setToken($token)
+    public function setName($name)
     {
-        $this->token = $token;
+        $this->name = $name;
+    }   
+    
+    public function getName()
+    {
+        return $this->name;
+    }
+     
+    public function setAccount($account)
+    {
+        $this->account = $account;
     }
     
-    public function getToken()
+    public function getAccount()
     {
-        return $this->token;
+        return $this->account;
     }
     
     public function isActive()
     {
         return !empty($this->token);
+    }
+    
+    public function jsonSerialize()
+    {
+        $return =  array(
+        	'id' => $this->id,
+            'name' => $this->name,
+            'account' => $this->account
+        );
+        
+        
+        
+        return $return;
     }
 }

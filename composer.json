@@ -5,9 +5,10 @@
     "require" : {
         "doctrine/orm": "2.3.3",
         "zendframework/zendframework1": "1.11.*",
-        "cvele/klein.php": "dev-master",
+        "klein/klein": "v1.1.0",
         "guzzle/guzzle": "~3.1.1",
-        "pimple/pimple": "v1.0.2"
+        "pimple/pimple": "v1.0.2",
+        "balanced/balanced": "*"
     },
     "autoload": {
         "psr-0": {
