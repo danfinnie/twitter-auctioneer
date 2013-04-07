@@ -20,10 +20,13 @@ var connection = mysql.createConnection({
  * This thing shoves tweets to our bot into the database.
  */
 stream.stream();
+stream.on('error', function(e) {
+    console.log(e);
+});
 stream.on('data', function(data) {
     // Only handle tweets
     if (!data.user || !data.text)
-        return
+        return;
 
     console.log(data);
 
@@ -32,7 +35,7 @@ stream.on('data', function(data) {
 
     var price_matches = /\$([\d\.]+)/.exec(data.text)
     if (!price_matches || price_matches.length < 2)
-        return // Needs to have a price
+        return; // Needs to have a price
     var price = price_matches[1];
 
     var hashtags = data.entities.hashtags.map(function(tag) { return tag.text });
