@@ -19,7 +19,7 @@ class Bid
      * @Column(type="integer")
      * @var int
      */
-    protected $price;
+    protected $amount;
 
     /**
      * @Column(type="datetime")
@@ -37,11 +37,36 @@ class Bid
      **/    
     protected $user;
     
-    public function __construct(Auction $auction, User $user, $price, DateTime $timestamp)
+    public function __construct(Auction $auction, User $user, $amount, \DateTime $timestamp)
     {
         $this->auction = $auction;
         $this->user = $user;
-        $this->price = $price;
+        $this->amount = $amount;
         $this->timestamp = $timestamp;
+    }
+    
+    public function getId()
+    {
+        return $this->id;
+    }
+    
+    public function getAmount()
+    {
+        return $this->amount;
+    }
+    
+    public function getUser()
+    {
+        return $this->user;
+    }
+    
+    public function getTimestamp()
+    {
+        return $this->timestamp;
+    }
+    
+    public function getAuction()
+    {
+        return $this->auction;
     }
 }

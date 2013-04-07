@@ -1,5 +1,6 @@
 <?php
 namespace TweetBid\Model;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @Entity
@@ -19,7 +20,7 @@ class Auction
      * @Column(type="integer", nullable=true)
      * @var int
      */
-    protected $price;
+    protected $amount;
 
     /**
      * @Column(type="string")
@@ -28,7 +29,7 @@ class Auction
     protected $item;
     
     /**
-     * @Column(type="datetime")
+     * @Column(type="datetime", nullable=true)
      * @var int
      */
     protected $start;
@@ -48,6 +49,12 @@ class Auction
      * @ManyToOne(targetEntity="TweetBid\Model\User")
      **/
     protected $seller;
+    
+    /**
+     * @OneToMany(targetEntity="TweetBid\Model\Bid", mappedBy="auction")
+     * @var Doctrine\Common\Collections\ArrayCollection
+     **/    
+    protected $bids = array();
 
     /**
      * @Column(type="boolean")
@@ -55,9 +62,19 @@ class Auction
      */
     protected $active = false;
     
-    public function __construct(Seller $seller, $item)
+    public function __construct($item)
     {
-        $this->seller = $seller;
-        $this->idem = $item;
+        $this->item = $item;
+        $this->bids = new ArrayCollection();
+    }
+    
+    public function getId()
+    {
+        return $this->id;
+    }
+    
+    public function getBids()
+    {
+        return $this->bids->toArray();
     }
 }
