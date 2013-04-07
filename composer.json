@@ -6,7 +6,8 @@
         "doctrine/orm": "2.3.3",
         "zendframework/zendframework1": "1.11.*",
         "cvele/klein.php": "dev-master",
-        "guzzle/guzzle": "~3.1.1"
+        "guzzle/guzzle": "~3.1.1",
+        "pimple/pimple": "v1.0.2"
     },
     "autoload": {
         "psr-0": {

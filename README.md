@@ -74,3 +74,14 @@ Possible Tweets
 * @twitter_auctioneer I'll #bid $50 for the #bike.
 * @twitter_auctioneer You selling a #bike?  I'm down to #bid $60.
 * @zoey You won the #bike!
+
+Fun New ORM Stuff
+-----------------
+* `php tools/doctrine.php`: the doctrine CLI tool
+* `php tools/doctrine.php orm:validate-schema`: validate the mapping is valid and correct
+* `php tools/doctrine.php orm:schema-tool:create`: create the database
+* `php tools/doctrine.php orm:schema-tool:update`: update from mapping
+
+Mapping doesn't match current database. Either current database should conform 
+to Doctrine defaults, the annotations should be update to reflect the 
+non-standard field names, or a DBA should be hired.

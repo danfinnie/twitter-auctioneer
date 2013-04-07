@@ -1,5 +1,6 @@
 <?php
-namespace \TweetBid\Model;
+namespace TweetBid\Model;
+
 /**
  * @Entity
  * @Table(name="auctions")
@@ -15,7 +16,7 @@ class Auction
     protected $id;
     
     /**
-     * @Column(type="integer")
+     * @Column(type="integer", nullable=true)
      * @var int
      */
     protected $price;
@@ -33,7 +34,7 @@ class Auction
     protected $start;
 
     /**
-     * @Column(type="datetime")
+     * @Column(type="datetime", nullable=true)
      * @var int
      */
     protected $end;
@@ -52,6 +53,11 @@ class Auction
      * @Column(type="boolean")
      * @var bool
      */
-    protected $active;
+    protected $active = false;
     
+    public function __construct(Seller $seller, $item)
+    {
+        $this->seller = $seller;
+        $this->idem = $item;
+    }
 }
